@@ -1,0 +1,20 @@
+/* We can keep this minimal as styles are handled by component CSS files */
+.app-container {
+  width: 100vw;
+  height: 100vh;
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+}
+
+.main-nav button {
+  background: rgba(0,0,0,0.5);
+  color: white;
+  border: none;
+  padding: 5px 10px;
+  border-radius: 4px;
+  cursor: pointer;
+}
+.main-nav button:hover {
+  background: rgba(0,0,0,0.8);
+}
