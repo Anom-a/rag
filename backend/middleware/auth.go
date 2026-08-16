@@ -1,7 +1,7 @@
 package middleware
 
 import (
-	"Rag/config"
+	"github.com/Anom-a/rag/config"
 	"crypto/hmac"
 	"crypto/sha256"
 	"crypto/subtle"

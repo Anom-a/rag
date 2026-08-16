@@ -19,17 +19,47 @@ function App() {
   }, [route, hasToken]);
 
   return (
-    <div className="app-container">
-      <nav className="main-nav" style={{ position: 'fixed', top: 0, right: 0, padding: '10px', zIndex: 1000 }}>
-        <button onClick={goChat} style={{ marginRight: '10px' }}>Chat</button>
-        <button onClick={hasToken ? goDashboard : goLogin}>
-          {hasToken ? 'Dashboard' : 'Admin Login'}
+    <div className="app-container" style={{ display: 'flex', flexDirection: 'column', minHeight: '100vh' }}>
+      <nav className="glass-panel" style={{ 
+        position: 'fixed', 
+        top: '16px', 
+        left: '50%', 
+        transform: 'translateX(-50%)',
+        display: 'flex',
+        gap: '8px',
+        padding: '6px',
+        zIndex: 1000,
+        borderRadius: '30px'
+      }}>
+        <button 
+          onClick={goChat} 
+          style={{ 
+            padding: '8px 24px', 
+            borderRadius: '24px', 
+            background: route === 'chat' ? 'var(--accent-gradient)' : 'transparent',
+            color: route === 'chat' ? '#fff' : 'var(--text)',
+          }}
+        >
+          Chatbot
+        </button>
+        <button 
+          onClick={hasToken ? goDashboard : goLogin}
+          style={{ 
+            padding: '8px 24px', 
+            borderRadius: '24px', 
+            background: (route === 'dashboard' || route === 'login') ? 'var(--accent-gradient)' : 'transparent',
+            color: (route === 'dashboard' || route === 'login') ? '#fff' : 'var(--text)',
+          }}
+        >
+          {hasToken ? 'Admin Dashboard' : 'Admin Login'}
         </button>
       </nav>
       
-      {route === 'chat' && <Chat />}
-      {route === 'login' && <Login onLoginSuccess={() => setRoute('dashboard')} />}
-      {route === 'dashboard' && <Dashboard onLogout={() => setRoute('chat')} />}
+      <main style={{ flex: 1, display: 'flex', paddingTop: '80px' }}>
+        {route === 'chat' && <Chat />}
+        {route === 'login' && <Login onLoginSuccess={() => setRoute('dashboard')} />}
+        {route === 'dashboard' && <Dashboard onLogout={() => setRoute('chat')} />}
+      </main>
     </div>
   );
 }

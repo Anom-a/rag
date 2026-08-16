@@ -1,7 +1,7 @@
 package middleware
 
 import (
-	"Rag/config"
+	"github.com/Anom-a/rag/config"
 	"strings"
 	"testing"
 	"time"

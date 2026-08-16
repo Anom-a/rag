@@ -1,7 +1,7 @@
 package services
 
 import (
-	"Rag/config"
+	"github.com/Anom-a/rag/config"
 	"io"
 	"net/http"
 	"net/http/httptest"

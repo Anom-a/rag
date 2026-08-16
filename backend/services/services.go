@@ -1,7 +1,7 @@
 package services
 
 import (
-	"Rag/config"
+	"github.com/Anom-a/rag/config"
 	"bytes"
 	"encoding/json"
 	"errors"

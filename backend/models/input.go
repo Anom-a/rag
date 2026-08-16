@@ -1,13 +1,13 @@
 package models
 
-import "go.mongodb.org/mongo-driver/bson/primitive"
+import "go.mongodb.org/mongo-driver/v2/bson"
 
 type Content struct {
 	Text string `json:"text" binding:"required"`
 }
 
 type Model struct {
-	ID        primitive.ObjectID `json:"id,omitempty" bson:"_id,omitempty"`
+	ID        bson.ObjectID `json:"id,omitempty" bson:"_id,omitempty"`
 	Text      string             `json:"text" bson:"text"`
 	Embedding []float64          `json:"embedding" bson:"embedding"`
 }

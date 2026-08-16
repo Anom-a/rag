@@ -7,15 +7,16 @@ import './Chat.css';
 
 export default function Chat() {
   const [messages, setMessages] = useState([
-    { role: 'bot', content: 'Hello! I am your AI assistant. How can I help you today?' }
+    { role: 'assistant', content: 'Hello! I am your AI assistant. How can I help you today?' }
   ]);
   const [isLoading, setIsLoading] = useState(false);
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
   const handleSend = async (text) => {
     const userMsg = { role: 'user', content: text };
     const chatHistory = [...messages];
     
-    setMessages(prev => [...prev, userMsg, { role: 'bot', content: '' }]);
+    setMessages(prev => [...prev, userMsg, { role: 'assistant', content: '' }]);
     setIsLoading(true);
 
     let currentBotContent = '';
@@ -27,7 +28,7 @@ export default function Chat() {
         currentBotContent += chunk;
         setMessages(prev => {
           const newMsgs = [...prev];
-          newMsgs[newMsgs.length - 1] = { role: 'bot', content: currentBotContent };
+          newMsgs[newMsgs.length - 1] = { role: 'assistant', content: currentBotContent };
           return newMsgs;
         });
       },
@@ -35,7 +36,7 @@ export default function Chat() {
         console.error("Stream error", error);
         setMessages(prev => {
           const newMsgs = [...prev];
-          newMsgs[newMsgs.length - 1] = { role: 'bot', content: currentBotContent + '\n[Error communicating with server]' };
+          newMsgs[newMsgs.length - 1] = { role: 'assistant', content: currentBotContent + '\n[Error communicating with server]' };
           return newMsgs;
         });
         setIsLoading(false);
@@ -48,10 +49,15 @@ export default function Chat() {
 
   return (
     <div className="chat-container">
-      <Sidebar />
+      <Sidebar isOpen={isSidebarOpen} onClose={() => setIsSidebarOpen(false)} />
       <div className="chat-main">
         <header className="chat-header">
-          <div className="header-title">Chatbot</div>
+          <div className="header-title">
+            <button className="mobile-menu-btn" onClick={() => setIsSidebarOpen(!isSidebarOpen)}>
+              ☰
+            </button>
+            Chatbot
+          </div>
           <div className="header-nav">
             <button>Settings</button>
           </div>

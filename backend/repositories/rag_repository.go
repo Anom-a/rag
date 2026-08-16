@@ -1,10 +1,12 @@
 package repositories
 
 import (
-	"Rag/models"
+	"github.com/Anom-a/rag/models"
 	"context"
-	"go.mongodb.org/mongo-driver/bson"
-	"go.mongodb.org/mongo-driver/mongo"
+	"math"
+	"sort"
+	"go.mongodb.org/mongo-driver/v2/bson"
+	"go.mongodb.org/mongo-driver/v2/mongo"
 )
 
 func InsertModel(ctx context.Context, collection *mongo.Collection, m models.Model) error {
@@ -12,52 +14,61 @@ func InsertModel(ctx context.Context, collection *mongo.Collection, m models.Mod
 	return err
 }
 
+func cosineSimilarity(a, b []float64) float64 {
+	if len(a) != len(b) {
+		return 0
+	}
+	var dotProduct, normA, normB float64
+	for i := range a {
+		dotProduct += a[i] * b[i]
+		normA += a[i] * a[i]
+		normB += b[i] * b[i]
+	}
+	if normA == 0 || normB == 0 {
+		return 0
+	}
+	return dotProduct / (math.Sqrt(normA) * math.Sqrt(normB))
+}
+
 func FindModel(ctx context.Context, collection *mongo.Collection, emb []float64, limit int, minScore float64) ([]models.Chunk, error) {
 	if limit < 1 {
 		limit = 1
 	}
 
-	numCandidates := limit * 25
-	if numCandidates < 100 {
-		numCandidates = 100
-	}
-
-	pipeline := mongo.Pipeline{
-		bson.D{
-			{Key: "$vectorSearch", Value: bson.D{
-				{Key: "queryVector", Value: emb},
-				{Key: "path", Value: "embedding"},
-				{Key: "limit", Value: limit},
-				{Key: "index", Value: "embedding"},
-				{Key: "numCandidates", Value: numCandidates},
-			}},
-		},
-		bson.D{
-			{Key: "$project", Value: bson.D{
-				{Key: "_id", Value: 0},
-				{Key: "text", Value: 1},
-				{Key: "embedding", Value: 1},
-				{Key: "score", Value: bson.D{{Key: "$meta", Value: "vectorSearchScore"}}},
-			}},
-		},
-		bson.D{{Key: "$match", Value: bson.D{
-			{Key: "score", Value: bson.D{{Key: "$gt", Value: minScore}}},
-		}}},
-		bson.D{
-			{Key: "$sort", Value: bson.D{
-				{Key: "score", Value: -1},
-			}},
-		},
-		bson.D{{Key: "$limit", Value: limit}},
-	}
-	cursor, err := collection.Aggregate(ctx, pipeline)
+	cursor, err := collection.Find(ctx, bson.M{})
 	if err != nil {
 		return nil, err
 	}
 	defer cursor.Close(ctx)
-	var res []models.Chunk
-	if err := cursor.All(ctx, &res); err != nil {
+
+	var allModels []models.Model
+	if err := cursor.All(ctx, &allModels); err != nil {
 		return nil, err
 	}
-	return res, nil
+
+	var chunks []models.Chunk
+	for _, m := range allModels {
+		score := cosineSimilarity(emb, m.Embedding)
+		if score > minScore {
+			chunks = append(chunks, models.Chunk{
+				Text:      m.Text,
+				Embedding: m.Embedding,
+				Score:     score,
+			})
+		}
+	}
+
+	sort.Slice(chunks, func(i, j int) bool {
+		return chunks[i].Score > chunks[j].Score
+	})
+
+	if len(chunks) > limit {
+		chunks = chunks[:limit]
+	}
+
+	if chunks == nil {
+		chunks = make([]models.Chunk, 0)
+	}
+
+	return chunks, nil
 }

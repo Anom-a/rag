@@ -1,8 +1,8 @@
 package controllers
 
 import (
-	"Rag/config"
-	"Rag/middleware"
+	"github.com/Anom-a/rag/config"
+	"github.com/Anom-a/rag/middleware"
 	"net/http"
 	"strings"
 	"time"

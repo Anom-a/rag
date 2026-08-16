@@ -1,16 +1,16 @@
 package controllers
 
 import (
-	"Rag/config"
-	"Rag/models"
-	"Rag/repositories"
-	"Rag/services"
+	"github.com/Anom-a/rag/config"
+	"github.com/Anom-a/rag/models"
+	"github.com/Anom-a/rag/repositories"
+	"github.com/Anom-a/rag/services"
 	"errors"
 	"net/http"
 	"strings"
 
 	"github.com/gin-gonic/gin"
-	"go.mongodb.org/mongo-driver/mongo"
+	"go.mongodb.org/mongo-driver/v2/mongo"
 )
 
 type Controller struct {
@@ -54,6 +54,48 @@ func (ctrl *Controller) CreateDocument(c *gin.Context) {
 		return
 	}
 	c.JSON(201, gin.H{"status": "OK"})
+}
+
+func (ctrl *Controller) UploadDocument(c *gin.Context) {
+	file, err := c.FormFile("file")
+	if err != nil {
+		c.JSON(400, gin.H{"error": "file is required"})
+		return
+	}
+
+	text, err := services.ExtractText(file)
+	if err != nil {
+		c.JSON(400, gin.H{"error": "failed to extract text: " + err.Error()})
+		return
+	}
+
+	text = strings.TrimSpace(text)
+	if text == "" {
+		c.JSON(400, gin.H{"error": "extracted text is empty"})
+		return
+	}
+
+	if len(text) > 10000 {
+		text = text[:10000] // truncate instead of failing, for better UX with long docs
+	}
+
+	emb, err := services.GetEmbedding(ctrl.Cfg, text)
+	if err != nil {
+		c.JSON(500, gin.H{"error": "embedding failed: " + err.Error()})
+		return
+	}
+
+	doc := models.Model{
+		Text:      text,
+		Embedding: emb,
+	}
+
+	if err := repositories.InsertModel(c.Request.Context(), ctrl.Col, doc); err != nil {
+		c.JSON(500, gin.H{"error": "failed to save to database: " + err.Error()})
+		return
+	}
+
+	c.JSON(201, gin.H{"status": "OK", "message": "File uploaded and processed successfully"})
 }
 
 func (ctrl *Controller) Search(c *gin.Context) {

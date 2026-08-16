@@ -1,8 +1,8 @@
 package main
 
 import (
-	"Rag/config"
-	"Rag/routes"
+	"github.com/Anom-a/rag/config"
+	"github.com/Anom-a/rag/routes"
 	"log"
 
 	"github.com/joho/godotenv"

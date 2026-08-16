@@ -1,7 +1,7 @@
 package middleware
 
 import (
-	"Rag/config"
+	"github.com/Anom-a/rag/config"
 	"net/http"
 
 	"github.com/gin-gonic/gin"

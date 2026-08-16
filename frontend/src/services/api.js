@@ -1,5 +1,6 @@
-const API_BASE = '/api';
-const AUTH_BASE = '/auth';
+const API_URL = import.meta.env.VITE_API_URL || '';
+const API_BASE = `${API_URL}/api`;
+const AUTH_BASE = `${API_URL}/auth`;
 
 export async function login(username, password) {
   const res = await fetch(`${AUTH_BASE}/login`, {
@@ -84,6 +85,26 @@ export async function uploadDocument(text) {
   if (!res.ok) {
     const data = await res.json().catch(() => ({}));
     throw new Error(data.error || 'Upload failed');
+  }
+  return res.json();
+}
+
+export async function uploadFileDocument(file) {
+  const token = localStorage.getItem('adminToken');
+  const formData = new FormData();
+  formData.append('file', file);
+
+  const res = await fetch(`${API_BASE}/upload`, {
+    method: 'POST',
+    headers: {
+      'Authorization': `Bearer ${token}`
+    },
+    body: formData,
+  });
+  
+  if (!res.ok) {
+    const data = await res.json().catch(() => ({}));
+    throw new Error(data.error || 'File upload failed');
   }
   return res.json();
 }

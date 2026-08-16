@@ -5,8 +5,8 @@ import (
 	"errors"
 	"time"
 
-	"go.mongodb.org/mongo-driver/mongo"
-	"go.mongodb.org/mongo-driver/mongo/options"
+	"go.mongodb.org/mongo-driver/v2/mongo"
+	"go.mongodb.org/mongo-driver/v2/mongo/options"
 )
 
 func ConnectMongo(cfg AppConfig) (context.Context, context.CancelFunc, *mongo.Collection, error) {
@@ -17,7 +17,7 @@ func ConnectMongo(cfg AppConfig) (context.Context, context.CancelFunc, *mongo.Co
 		return nil, nil, nil, errors.New("url is empty")
 	}
 	clientOpt := options.Client().ApplyURI(url)
-	client, err := mongo.Connect(ctx, clientOpt)
+	client, err := mongo.Connect(clientOpt)
 	if err != nil {
 		return ctx, cancel, nil, err
 	}
