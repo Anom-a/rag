@@ -19,6 +19,30 @@ export async function login(username, password) {
   return data;
 }
 
+export function isAuthenticated() {
+  return !!localStorage.getItem('adminToken');
+}
+
+export function logout() {
+  localStorage.removeItem('adminToken');
+}
+
+export async function searchDocuments(query, topK = 5) {
+  const res = await fetch(`${API_BASE}/search`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ text: query, top_k: topK }),
+  });
+
+  if (!res.ok) {
+    const data = await res.json().catch(() => ({}));
+    throw new Error(data.error || 'Search failed');
+  }
+
+  const data = await res.json();
+  return data.message || [];
+}
+
 export async function streamChat(query, history, onChunk, onError, onDone) {
   try {
     const token = localStorage.getItem('adminToken');

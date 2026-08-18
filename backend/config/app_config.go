@@ -55,8 +55,8 @@ func LoadAppConfig() (AppConfig, error) {
 
 		GroqAPIKey:    strings.TrimSpace(os.Getenv("GROQ_API_KEY")),
 		GroqBaseURL:   strings.TrimRight(envOrDefault("GROQ_BASE_URL", "https://api.groq.com/openai/v1"), "/"),
-		LLMModel:      envOrDefault("LLM_MODEL", "llama-3.3-70b-versatile"),
-		DefaultPrompt: envOrDefault("DEFAULT_SYSTEM_PROMPT", "You are a helpful assistant for Ethio Robotics staff users. Use the retrieved context to answer the user question accurately."),
+		LLMModel:      envOrDefault("LLM_MODEL", "openai/gpt-oss-120b"),
+		DefaultPrompt: envOrDefault("DEFAULT_SYSTEM_PROMPT", "You are a helpful assistant for Ethio Robotics staff users. Always refer to the company as \"Ethio Robotics\" and never abbreviate it. Use the retrieved context to answer the user question accurately."),
 
 		ChatTopK:       envIntOrDefault("CHAT_TOP_K", 4),
 		MinScore:       envFloatOrDefault("MIN_VECTOR_SCORE", 0.8),
