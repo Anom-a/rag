@@ -1,6 +1,6 @@
-# Ethio Robotics RAG Application
+# AI RAG Platform
 
-Welcome to the **Ethio Robotics RAG Application**. This project provides a Retrieval-Augmented Generation (RAG) platform customized for the internal staff at Ethio Robotics. 
+Welcome to the **AI RAG Platform**. This project provides a Retrieval-Augmented Generation (RAG) platform customized for enterprise internal staff. 
 
 The application enables staff members to query documents and context from the organization’s knowledge base, retrieving accurate answers powered by state-of-the-art AI models, while incorporating a modern frontend and a robust backend.
 
@@ -72,4 +72,4 @@ For a deeper dive into the system's architecture and design choices, please refe
 
 ## License
 
-All rights reserved by Ethio Robotics.
+All rights reserved.

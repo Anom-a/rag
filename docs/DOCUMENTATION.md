@@ -1,7 +1,7 @@
-# Ethio Robotics RAG Architecture Documentation
+# AI RAG Architecture Documentation
 
 ## 1. Overview
-This platform serves as a modern Retrieval-Augmented Generation (RAG) system tailored for Ethio Robotics. The primary goal is to provide internal staff with an intuitive, efficient chat interface capable of referencing extensive internal documentation. 
+This platform serves as a modern Retrieval-Augmented Generation (RAG) system. The primary goal is to provide internal staff with an intuitive, efficient chat interface capable of referencing extensive internal documentation. 
 
 The system relies on LLMs to synthesize answers and Vector databases to fetch relevant historical or technical context.
 
@@ -28,7 +28,7 @@ The system relies on LLMs to synthesize answers and Vector databases to fetch re
 *   The system includes rate limiting mapped per client to prevent API abuse, particularly aimed at expensive LLM endpoints.
 
 ### 3.2 Prompts
-*   The system behavior revolves around the `DEFAULT_SYSTEM_PROMPT` housed in the environment variables. Ensure the prompt is meticulously crafted to force the LLM into answering exclusively from the retrieved context. (e.g., *"Always refer to the company as 'Ethio Robotics'"*).
+*   The system behavior revolves around the `DEFAULT_SYSTEM_PROMPT` housed in the environment variables. Ensure the prompt is meticulously crafted to force the LLM into answering exclusively from the retrieved context.
 
 ## 4. Ongoing Maintenance
 *   Ensure that new embeddings use the corresponding vector dimensionality defined during the Voyage AI endpoint configuration.
